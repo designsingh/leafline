@@ -31,15 +31,15 @@
 .pick b { display: block; font-family: Georgia, serif; font-weight: 400; font-size: 20px; letter-spacing: -.3px; }
 .pick small { color: var(--muted); font-size: 12px; }
 
-.swatch-head {
-  min-height: 92px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 14px 16px;
-}
-.swatch-head b { font-size: 32px; letter-spacing: -1px; }
-.swatch-head span { font-size: 12px; }
+.route { display: flex; flex-direction: column; height: 100%; }
+.route .content { display: flex; flex-direction: column; flex: 1; position: relative; }
+.route .card-accent { height: 4px; border-radius: 4px; margin: -6px 0 12px; }
+.route:has(.park-photo) .card-accent { display: none; }
+.route .card-score { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 4px; }
+.route .card-score b { font-size: 32px; letter-spacing: -1px; line-height: 1; }
+.route .card-score span { font-size: 13px; color: var(--muted); }
+.route .visual-leaves { height: 28px; margin: 8px 0 4px; }
+.route .actions { margin-top: auto; padding-top: 16px; }
 
 .viewing { background: #f7f0df; border-radius: 12px; padding: 14px 16px; margin: 8px 0 16px; }
 .viewing b { display: block; margin-bottom: 6px; }

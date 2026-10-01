@@ -109,9 +109,7 @@ function retention(park) {
 
 function cardPhoto(park) {
   const shot = photosFor(park)[0];
-  if (!shot) {
-    return `<div class="swatch-head" style="background:${leafColour(park)}33"><b>${park.colour}%</b><span>${esc(park.dominant)}</span></div>`;
-  }
+  if (!shot) return "";
   return `<button class="park-photo" data-detail="${park.id}" type="button" aria-label="See ${esc(park.name)} photos and report"><img src="${esc(shot.src)}" alt="${esc(shot.alt)}" loading="lazy" width="1200" height="900"><span class="photo-tag">${esc(park.name)} · scenic photo</span><span class="photo-count">▧ ${photosFor(park).length} photos</span></button><div class="photo-credit">Ontario Parks · Not today’s conditions</div>`;
 }
 
@@ -339,7 +337,7 @@ function render() {
   $("results-title").textContent = `${view === "saved" ? "Saved" : "Parks"} · ${rows.length}`;
   $("routes").innerHTML = rows.length ? rows.map((park) => {
     const days = ageDays(park.reportDate);
-    return `<article class="route">${cardPhoto(park)}<div class="observation" style="background:linear-gradient(135deg,${leafColour(park)}35,#f2f3e4)"><div class="observation-top"><div><b>${park.colour}%</b><br><span>Reported colour change</span></div><span>${esc(park.dominant)}</span></div>${leaves(park)}<span class="visual-label">Each leaf is 10 points of colour change</span></div><div class="content"><div class="eyebrow">${esc(regionOf(park))}</div><h3>${esc(park.name)}</h3><div class="palette" aria-hidden="true"><span style="width:${park.colour}%"></span><span style="width:${100 - park.colour}%;background:#5b7148"></span></div><div class="metrics"><span>${park.colour}% colour</span><span>about ${formatDrive(driveMinutes(park, origin))}</span></div><div class="freshness ${days > 5 ? "old" : ""}">${formatReportDate(park.reportDate)} · ${ageLabel(park.reportDate)}${days > 5 ? " · Older report" : ""}</div><p class="source">Ontario Parks · ${park.fall}% leaf fall</p><div class="actions"><button class="primary" type="button" data-detail="${park.id}">View report</button><button class="save" type="button" data-save="${park.id}" aria-label="${saved.has(park.id) ? "Unsave" : "Save"} ${esc(park.name)}" aria-pressed="${saved.has(park.id)}">${saved.has(park.id) ? "♥" : "♡"}</button></div></div></article>`;
+    return `<article class="route">${cardPhoto(park)}<div class="content"><div class="card-accent" style="background:${leafColour(park)}"></div><div class="eyebrow">${esc(regionOf(park))}</div><h3>${esc(park.name)}</h3><div class="card-score"><b>${park.colour}%</b><span>${esc(park.dominant)}</span></div>${leaves(park)}<div class="metrics"><span>about ${formatDrive(driveMinutes(park, origin))}</span><span>${park.fall}% leaf fall</span></div><div class="freshness ${days > 5 ? "old" : ""}">${formatReportDate(park.reportDate)} · ${ageLabel(park.reportDate)}${days > 5 ? " · Older report" : ""}</div><div class="actions"><button class="primary" type="button" data-detail="${park.id}">View report</button><button class="save" type="button" data-save="${park.id}" aria-label="${saved.has(park.id) ? "Unsave" : "Save"} ${esc(park.name)}" aria-pressed="${saved.has(park.id)}">${saved.has(park.id) ? "♥" : "♡"}</button></div></div></article>`;
   }).join("") : `<div class="empty">${view === "saved" ? "No saved parks yet. Tap the heart on a report." : "Nothing in this drive matches. Try Weekend, or All Ontario."}</div>`;
   renderHero(hero, rows);
   renderMap(rows);
