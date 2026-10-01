@@ -7,8 +7,8 @@
 <title>Leafline — fall colour from Toronto</title>
 <meta name="description" content="Real Ontario Parks foliage reports, ranked for a drive from Toronto.">
 <!-- /share -->
-<link rel="stylesheet" href="/styles.css?v=9">
-<link rel="stylesheet" href="/ux.css?v=9">
+<link rel="stylesheet" href="/styles.css?v=12">
+<link rel="stylesheet" href="/ux.css?v=12">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body>
@@ -27,14 +27,6 @@
         <a class="hero-link" href="#foliage-map">See it on the map</a>
       </div>
     </div>
-    <div class="canopy">
-      <div class="eyebrow" id="hero-eyebrow">Worth the drive</div>
-      <b id="hero-number"></b>
-      <p id="hero-name"></p>
-      <small id="hero-date"></small>
-      <small class="hero-drive" id="hero-drive"></small>
-      <div id="hero-leaves"></div>
-    </div>
     <div class="hero-credit">Algonquin scenic photo · Oct 2024 · <a href="https://www.pexels.com/photo/aerial-view-of-vibrant-autumn-forest-and-serene-lake-28843995/" target="_blank" rel="noopener">_theframetheory_ / Pexels</a> · Not a current observation</div>
   </section>
 
@@ -45,35 +37,25 @@
     <button type="button" data-drive="all">All Ontario</button>
     <button type="button" class="locate" id="locate">Use my location</button>
   </div>
-  <p class="drive-note" id="drive-note">Drive times are a rough estimate from Toronto to the park pin, not live traffic. Directions open in Google Maps.</p>
-
-  <div class="section-head"><h2 id="picks-title">The weekend list</h2></div>
-  <div class="picks" id="picks"></div>
+  <p class="drive-note" id="drive-note">Times are estimates from Toronto, not live traffic.</p>
 
   <div class="notice" id="feed-status" role="status"></div>
 
   <section class="map-section" aria-label="Foliage report map">
     <div class="map-shell">
-      <div id="foliage-map" class="foliage-map" tabindex="0" role="application" aria-label="Map of Ontario Parks foliage reports. Marker numbers follow the list. Plus and minus zoom. Home fits the parks."></div>
-      <div class="map-controls">
-        <button id="zoom-in" type="button" aria-label="Zoom map in">+</button>
-        <button id="zoom-out" type="button" aria-label="Zoom map out">−</button>
-        <button id="zoom-reset" type="button" aria-label="Fit visible parks" title="Fit visible parks">⌖</button>
-        <button id="map-expand" type="button" aria-label="Expand map" title="Expand map" aria-pressed="false">⛶</button>
-      </div>
-      <div class="map-usage">Drag to move · Scroll or pinch to zoom · Numbers match the list</div>
-    </div>
-    <div class="map-sidebar">
-      <div class="eyebrow">On this drive</div>
+      <div id="foliage-map" class="foliage-map" tabindex="0" role="application" aria-label="Map of Ontario Parks foliage reports. Marker colour is the reported colour change. Plus and minus zoom. Home fits the parks."></div>
       <div class="map-legend">
         <span><i style="background:#507a43"></i>0–29%</span>
         <span><i style="background:#cda323"></i>30–59%</span>
         <span><i style="background:#e97c30"></i>60–79%</span>
         <span><i style="background:#b84232"></i>80–100%</span>
       </div>
-      <div class="map-jump"><label for="map-jump">Jump to a park</label><select id="map-jump"></select></div>
-      <div id="map-selection"></div>
-      <p class="map-hint">Marker colours are the reported colour change. The basemap is geography, not a foliage photo.</p>
+      <div class="map-controls">
+        <button id="zoom-in" type="button" aria-label="Zoom map in">+</button>
+        <button id="zoom-out" type="button" aria-label="Zoom map out">−</button>
+        <button id="zoom-reset" type="button" aria-label="Fit visible parks" title="Fit visible parks">⌖</button>
+        <button id="map-expand" type="button" aria-label="Expand map" title="Expand map" aria-pressed="false">⛶</button>
+      </div>
     </div>
   </section>
 
@@ -117,7 +99,7 @@
 </aside>
 <div class="toast" id="toast" role="status" hidden></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="/photos.js?v=9"></script>
-<script type="module" src="/app.mjs?v=9"></script>
+<script src="/photos.js?v=12"></script>
+<script type="module" src="/app.mjs?v=12"></script>
 </body>
 </html>

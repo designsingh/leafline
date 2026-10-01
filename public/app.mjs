@@ -123,25 +123,19 @@ function cardSketch(park) {
     [378, 110, 44, "#7b9a68"],
   ].map(([x, y, size, fill]) => tree(x, y, size, fill)).join("");
   const leaf = (x, y, turn) => `<path d="${LEAFPATH}" fill="${colour}" transform="translate(${x} ${y}) rotate(${turn}) scale(.38)"/>`;
-  return `<button class="park-photo park-sketch" data-detail="${park.id}" type="button" aria-label="Open ${esc(park.name)} report"><svg viewBox="0 0 400 185" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="${sky}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c5dbc4"/><stop offset="55%" stop-color="#eef3e6"/><stop offset="100%" stop-color="#f6f0e2"/></linearGradient></defs><rect width="400" height="185" fill="url(#${sky})"/><circle cx="318" cy="44" r="22" fill="#f3d07a"/><circle cx="318" cy="44" r="36" fill="#f3d07a" opacity=".28"/><ellipse cx="86" cy="48" rx="36" ry="11" fill="#fff" opacity=".5"/><ellipse cx="112" cy="44" rx="20" ry="9" fill="#fff" opacity=".72"/><path d="M0 96C72 70 128 92 196 76 268 58 322 88 400 68V185H0Z" fill="#d7e2c8"/><path d="M0 124C88 106 154 134 232 116 304 100 348 128 400 114V185H0Z" fill="#9aaf86"/><path d="M0 158C84 148 156 170 246 154 316 142 362 164 400 152V185H0Z" fill="#5c7652"/>${trees}${leaf(58, 72, -16)}${leaf(188, 48, 22)}${leaf(268, 70, -8)}</svg><span class="photo-tag">${esc(park.name)}</span></button><div class="photo-credit">Colour sketch</div>`;
+  return `<button class="park-photo park-sketch" data-detail="${park.id}" type="button" aria-label="Open ${esc(park.name)} report"><svg viewBox="0 0 400 185" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="${sky}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c5dbc4"/><stop offset="55%" stop-color="#eef3e6"/><stop offset="100%" stop-color="#f6f0e2"/></linearGradient></defs><rect width="400" height="185" fill="url(#${sky})"/><circle cx="318" cy="44" r="22" fill="#f3d07a"/><circle cx="318" cy="44" r="36" fill="#f3d07a" opacity=".28"/><ellipse cx="86" cy="48" rx="36" ry="11" fill="#fff" opacity=".5"/><ellipse cx="112" cy="44" rx="20" ry="9" fill="#fff" opacity=".72"/><path d="M0 96C72 70 128 92 196 76 268 58 322 88 400 68V185H0Z" fill="#d7e2c8"/><path d="M0 124C88 106 154 134 232 116 304 100 348 128 400 114V185H0Z" fill="#9aaf86"/><path d="M0 158C84 148 156 170 246 154 316 142 362 164 400 152V185H0Z" fill="#5c7652"/>${trees}${leaf(58, 72, -16)}${leaf(188, 48, 22)}${leaf(268, 70, -8)}</svg><span class="photo-tag">Colour sketch</span></button>`;
 }
 
 function cardPhoto(park) {
   const shot = photosFor(park)[0];
   if (!shot) return cardSketch(park);
-  return `<button class="park-photo" data-detail="${park.id}" type="button" aria-label="See ${esc(park.name)} photos and report"><img src="${esc(shot.src)}" alt="${esc(shot.alt)}" loading="lazy" width="1200" height="900"><span class="photo-tag">${esc(park.name)} · scenic photo</span><span class="photo-count">▧ ${photosFor(park).length} photos</span></button><div class="photo-credit">Ontario Parks · Not today’s conditions</div>`;
+  return `<button class="park-photo" data-detail="${park.id}" type="button" aria-label="See ${esc(park.name)} photos and report"><img src="${esc(shot.src)}" alt="${esc(shot.alt)}" loading="lazy" width="1200" height="900"><span class="photo-tag">Scenic photo</span><span class="photo-count">▧ ${photosFor(park).length} photos</span></button>`;
 }
 
 function photoGallery(park) {
   const items = photosFor(park);
   if (!items.length) return "";
   return `<div class="gallery-heading"><b>Scenic photos</b><span>Not today’s conditions</span></div><div class="report-gallery">${items.map((shot) => `<figure><img src="${esc(shot.src)}" alt="${esc(shot.alt)}" loading="lazy"><figcaption><a href="${esc(shot.source)}" target="_blank" rel="noopener">Ontario Parks ↗</a></figcaption></figure>`).join("")}</div>`;
-}
-
-function mapPhoto(park) {
-  const shot = photosFor(park)[0];
-  if (!shot) return "";
-  return `<button type="button" style="padding:0;border:0;background:transparent;width:100%" data-detail="${park.id}" aria-label="Open ${esc(park.name)} report"><img class="map-photo" src="${esc(shot.src)}" alt="${esc(shot.alt)}" loading="lazy"></button><p class="map-photo-note">Scenic photo · Ontario Parks · Not current conditions</p>`;
 }
 
 function directionsUrl(park) {
@@ -235,12 +229,12 @@ function renderMap(rows) {
   ensureMap();
   if (!map) return;
   markerLayer.clearLayers();
-  rows.forEach((park, index) => {
+  rows.forEach((park) => {
     const icon = L.divIcon({
       className: `ll-marker${park.id === selectedPark ? " is-selected" : ""}`,
-      html: `<span style="background:${markerColour(park)}">${index + 1}</span>`,
-      iconSize: [28, 28],
-      iconAnchor: [14, 14],
+      html: `<span style="background:${markerColour(park)}"></span>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
     });
     const marker = L.marker([park.lat, park.lng], {
       icon,
@@ -248,7 +242,7 @@ function renderMap(rows) {
       alt: `${park.name}, ${park.colour} percent colour change`,
       riseOnHover: true,
     });
-    marker.on("click", () => selectPark(park.id));
+    marker.on("click", () => openReport(park.id));
     marker.addTo(markerLayer);
     marker.getElement()?.setAttribute("aria-label", `${park.name}, ${park.colour}% colour change`);
   });
@@ -288,53 +282,21 @@ function renderMap(rows) {
   $("zoom-out").disabled = limits <= map.getMinZoom();
 }
 
-function renderSelection(rows) {
-  const park = rows.find((item) => item.id === selectedPark) || rows[0];
-  $("map-jump").innerHTML = rows.map((item) => `<option value="${item.id}">${esc(item.name)} · ${item.colour}%</option>`).join("");
-  $("map-jump").disabled = !rows.length;
-  if (!park) {
-    $("map-selection").innerHTML = "<p>No parks match. Try a longer drive or another search.</p>";
-    return;
-  }
-  selectedPark = park.id;
-  $("map-jump").value = park.id;
-  const mins = driveMinutes(park, origin);
-  const rank = rows.findIndex((item) => item.id === park.id) + 1;
-  $("map-selection").innerHTML = `<span class="marker-badge">${rank ? `No. ${rank} · ` : ""}${esc(regionOf(park))}</span><h2>${esc(park.name)}</h2>${mapPhoto(park)}${leaves(park)}<p><strong>${park.colour}% colour change</strong> · ${esc(park.dominant)}<br>About ${formatDrive(mins)} from ${placeName()}.</p>${retention(park)}<p>Observed ${formatReportDate(park.reportDate)} · ${ageLabel(park.reportDate)}</p><div class="actions"><button class="primary" type="button" data-detail="${park.id}">Report & directions</button><button class="secondary" type="button" data-share="${park.id}">Share</button></div>`;
-}
-
-function renderHero(park, rows) {
-  const fromYou = origin.name === "you" ? " from you" : "";
-  $("picks-title").textContent = `${driveWindow().title}${fromYou}`;
+function renderHero(park) {
   $("hero-kicker").textContent = pinActive ? "Sent to you" : origin.name === "you" ? "From where you are" : "From Toronto";
+  $("drive-note").textContent = origin.name === "you"
+    ? "Times are estimates from your location, not live traffic. A shared link still describes the drive from Toronto."
+    : "Times are estimates from Toronto, not live traffic.";
   if (!park) {
     $("hero-title").innerHTML = "Reports<br><em>are out.</em>";
     $("hero-sub").textContent = "Ontario Parks didn’t return a list. Try refresh, or open the official report.";
-    $("hero-number").textContent = "";
-    $("hero-name").textContent = "";
-    $("hero-date").textContent = "";
-    $("hero-drive").textContent = "";
-    $("hero-leaves").innerHTML = "";
-    $("picks").innerHTML = "";
     return;
   }
   const mins = driveMinutes(park, origin);
   $("hero-title").innerHTML = headline(park.colour);
   $("hero-sub").innerHTML = `${leadIn()}. <strong>${esc(park.name)}</strong> is at ${park.colour}% colour, about ${formatDrive(mins)} from ${placeName()}. Reported ${formatReportDate(park.reportDate)} by Ontario Parks.`;
-  $("hero-eyebrow").textContent = pinActive ? "Shared plan" : "Worth the drive";
-  $("hero-number").textContent = `${park.colour}%`;
-  $("hero-name").textContent = park.name;
-  $("hero-date").textContent = `Reported ${formatReportDate(park.reportDate)}`;
-  $("hero-drive").textContent = `About ${formatDrive(mins)} from ${placeName()}`;
-  $("hero-leaves").innerHTML = leaves(park);
   $("share").dataset.share = park.id;
   document.title = `${park.name} is at ${park.colour}% — Leafline`;
-  const shown = rows.slice(0, 3);
-  const pickRows = shown.some((item) => item.id === park.id) ? shown : [park, ...shown.slice(0, 2)];
-  $("drive-note").textContent = origin.name === "you"
-    ? "Drive times are a rough estimate from your location to the park pin, not live traffic. A shared link still describes the drive from Toronto."
-    : "Drive times are a rough estimate from Toronto to the park pin, not live traffic. Directions open in Google Maps.";
-  $("picks").innerHTML = pickRows.map((item, index) => `<button class="pick${item.id === park.id ? " is-on" : ""}" type="button" data-detail="${item.id}"><span class="pick-rank">${index + 1}</span><span><b>${esc(item.name)}</b><small>${item.colour}% · ${esc(item.dominant)} · about ${formatDrive(driveMinutes(item, origin))}</small></span></button>`).join("");
   syncUrl();
 }
 
@@ -356,11 +318,11 @@ function render() {
   $("results-title").textContent = `${view === "saved" ? "Saved" : "Parks"} · ${rows.length}`;
   $("routes").innerHTML = rows.length ? rows.map((park) => {
     const days = ageDays(park.reportDate);
-    return `<article class="route">${cardPhoto(park)}<div class="content"><div class="card-accent" style="background:${leafColour(park)}"></div><div class="eyebrow">${esc(regionOf(park))}</div><h3>${esc(park.name)}</h3><div class="card-score"><b>${park.colour}%</b><span>${esc(park.dominant)}</span></div>${leaves(park)}<div class="metrics"><span>about ${formatDrive(driveMinutes(park, origin))}</span><span>${park.fall}% leaf fall</span></div><div class="freshness ${days > 5 ? "old" : ""}">${formatReportDate(park.reportDate)} · ${ageLabel(park.reportDate)}${days > 5 ? " · Older report" : ""}</div><div class="actions"><button class="primary" type="button" data-detail="${park.id}">View report</button><button class="save" type="button" data-save="${park.id}" aria-label="${saved.has(park.id) ? "Unsave" : "Save"} ${esc(park.name)}" aria-pressed="${saved.has(park.id)}">${saved.has(park.id) ? "♥" : "♡"}</button></div></div></article>`;
-  }).join("") : `<div class="empty">${view === "saved" ? "No saved parks yet. Tap the heart on a report." : "Nothing in this drive matches. Try Weekend, or All Ontario."}</div>`;
-  renderHero(hero, rows);
+    const stale = days > 5 ? `<div class="freshness old">Older report · ${formatReportDate(park.reportDate)}</div>` : "";
+    return `<article class="route">${cardPhoto(park)}<div class="content"><button class="card-open" type="button" data-detail="${park.id}"><h3>${esc(park.name)}</h3><div class="card-score"><b>${park.colour}%</b><span>${esc(park.dominant)}</span></div><div class="metrics"><span>about ${formatDrive(driveMinutes(park, origin))}</span></div>${stale}</button><button class="save" type="button" data-save="${park.id}" aria-label="${saved.has(park.id) ? "Unsave" : "Save"} ${esc(park.name)}" aria-pressed="${saved.has(park.id)}">${saved.has(park.id) ? "♥" : "♡"}</button></div></article>`;
+  }).join("") : `<div class="empty">${view === "saved" ? "No saved parks yet. Tap the heart on a park." : "Nothing in this drive matches. Try Weekend, or All Ontario."}</div>`;
+  renderHero(hero);
   renderMap(rows);
-  renderSelection(rows);
   if (openReportId) fillReport(openReportId);
 }
 
@@ -374,12 +336,6 @@ function ensurePinnedVisible() {
   if (driveMinutes(park, origin) > driveWindow().minutes) driveId = "all";
 }
 
-function selectPark(id) {
-  selectedPark = id;
-  pendingFocus = id;
-  render();
-}
-
 function fillReport(id) {
   const park = feed.parks.find((item) => item.id === id);
   const panel = $("report");
@@ -388,7 +344,7 @@ function fillReport(id) {
     return;
   }
   const viewing = park.viewing ? `<div class="viewing"><b>Where to look</b><p>${esc(park.viewing)}</p></div>` : "";
-  $("detail-body").innerHTML = `<div class="modal-head"><div><div class="eyebrow">Official park observation</div><h2 id="drawer-title">${esc(park.name)}</h2><p class="meta">Report dated ${formatReportDate(park.reportDate)} · about ${formatDrive(driveMinutes(park, origin))} from ${placeName()}</p></div></div><div class="modal-content"><div class="detail-stats"><div class="stat"><b>${park.colour}%</b><span>Reported colour change</span></div><div class="stat"><b>${park.fall}%</b><span>Reported leaf fall</span></div></div>${leaves(park)}<p>Dominant colour: <strong>${esc(park.dominant)}</strong>.</p>${retention(park)}${viewing}${photoGallery(park)}<p class="meta">This is the park’s report for that date. The drive time is an estimate, not live traffic. No peak date is predicted. Scenic photos are not current conditions.</p><div class="source-row"><b>Where this comes from</b>Ontario Parks Fall Colour Report · ${ageLabel(park.reportDate)}.<br>Retrieved ${esc(new Date(feed.fetchedAt).toLocaleString("en-CA", { timeZone: "America/Toronto" }))} Toronto time.</div><div class="modal-actions"><button class="primary" type="button" data-share="${park.id}">Share this park</button><a class="secondary" href="${directionsUrl(park)}" target="_blank" rel="noopener">Directions ↗</a><a class="secondary" href="${esc(feed.source)}" target="_blank" rel="noopener">Official foliage report ↗</a><a class="secondary" href="${esc(park.parkUrl)}" target="_blank" rel="noopener">Park access & permits ↗</a></div></div>`;
+  $("detail-body").innerHTML = `<div class="modal-head"><div><div class="eyebrow">Official park observation</div><h2 id="drawer-title">${esc(park.name)}</h2><p class="meta">${esc(regionOf(park))} · Report dated ${formatReportDate(park.reportDate)} · about ${formatDrive(driveMinutes(park, origin))} from ${placeName()}</p></div></div><div class="modal-content"><div class="detail-stats"><div class="stat"><b>${park.colour}%</b><span>Reported colour change</span></div><div class="stat"><b>${park.fall}%</b><span>Reported leaf fall</span></div></div>${leaves(park)}<p>Dominant colour: <strong>${esc(park.dominant)}</strong>.</p>${retention(park)}${viewing}${photoGallery(park)}<p class="meta">This is the park’s report for that date. The drive time is an estimate, not live traffic. No peak date is predicted. Scenic photos are not current conditions.</p><div class="source-row"><b>Where this comes from</b>Ontario Parks Fall Colour Report · ${ageLabel(park.reportDate)}.<br>Retrieved ${esc(new Date(feed.fetchedAt).toLocaleString("en-CA", { timeZone: "America/Toronto" }))} Toronto time.</div><div class="modal-actions"><button class="primary" type="button" data-share="${park.id}">Share this park</button><a class="secondary" href="${directionsUrl(park)}" target="_blank" rel="noopener">Directions ↗</a><a class="secondary" href="${esc(feed.source)}" target="_blank" rel="noopener">Official foliage report ↗</a><a class="secondary" href="${esc(park.parkUrl)}" target="_blank" rel="noopener">Park access & permits ↗</a></div></div>`;
   panel.hidden = false;
   panel.setAttribute("aria-labelledby", "drawer-title");
   document.body.classList.add("report-open");
@@ -465,7 +421,7 @@ function validate(report) {
     }
     if (park.viewing != null && typeof park.viewing !== "string") throw new Error("Invalid report");
     park.name = park.name.trim();
-    park.dominant = String(park.dominant).trim();
+    park.dominant = String(park.dominant).trim().replace(/[.]+$/, "");
     if (typeof park.viewing === "string") park.viewing = park.viewing.trim();
   }
   return report;
@@ -483,7 +439,7 @@ async function refresh() {
     feed = validate(await response.json());
     render();
     maybeOpenArrival();
-    status(`Live Ontario Parks reports · ${new Date(feed.fetchedAt).toLocaleString("en-CA", { timeZone: "America/Toronto" })} Toronto time.`);
+    status("");
   } catch {
     status("Couldn’t refresh Ontario Parks. These are the last saved reports — check the official page before you drive.", "error");
   } finally {
@@ -566,6 +522,7 @@ document.addEventListener("click", (event) => {
     render();
     return;
   }
+  if (event.target.closest(".ll-marker")) return;
   if (openReportId && !$("report").contains(event.target)) closeReport();
 }, true);
 
@@ -605,7 +562,6 @@ $("export").onclick = () => {
 $("zoom-in").onclick = () => map && map.zoomIn();
 $("zoom-out").onclick = () => map && map.zoomOut();
 $("zoom-reset").onclick = () => { fitKey = ""; render(); };
-$("map-jump").onchange = () => selectPark($("map-jump").value);
 $("map-expand").onclick = () => toggleMapExpanded();
 $("locate").onclick = () => {
   if (origin.name === "you") {
