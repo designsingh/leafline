@@ -102,6 +102,19 @@ function markerColour(park) {
   return "#b84232";
 }
 
+function mapleLeaf(fill, stroke = "none", width = 0) {
+  const strokeAttr = stroke === "none" ? "" : ` stroke="${stroke}" stroke-width="${width}" stroke-linejoin="round"`;
+  return `<svg viewBox="-22 -24 44 48" aria-hidden="true"><path d="${LEAFPATH}" fill="${fill}"${strokeAttr}/></svg>`;
+}
+
+function toneMark(park) {
+  const swatch = { Green: "#3f6b45", Yellow: "#e0b000", Orange: "#e07a2f", Red: "#c24532" };
+  const leaves = String(park.dominant).split("/").map((part) => part.trim()).filter(Boolean)
+    .map((name) => mapleLeaf(swatch[name] || "#c24532"))
+    .join("");
+  return `<span class="tone">${leaves}<span>${esc(park.dominant)}</span></span>`;
+}
+
 function retention(park) {
   const remain = 100 - park.fall;
   return `<div class="retention-visual"><svg viewBox="0 0 80 80" role="img" aria-label="${remain}% of leaves remaining"><circle cx="40" cy="40" r="29" fill="none" stroke="#dedfcf" stroke-width="9"/><circle cx="40" cy="40" r="29" fill="none" stroke="#54764a" stroke-width="9" stroke-dasharray="${remain / 100 * 182.21} 182.21" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" fill="#244c3a" font-size="16" font-family="system-ui">${remain}%</text></svg><p><strong>${park.fall}% leaf fall</strong><br>Ring shows ${remain}% still on the trees<br><span style="font-size:11px">Calculated as 100 − reported leaf fall</span></p></div>`;
@@ -232,9 +245,9 @@ function renderMap(rows) {
   rows.forEach((park) => {
     const icon = L.divIcon({
       className: `ll-marker${park.id === selectedPark ? " is-selected" : ""}`,
-      html: `<span style="background:${markerColour(park)}"></span>`,
-      iconSize: [16, 16],
-      iconAnchor: [8, 8],
+      html: mapleLeaf(markerColour(park), park.id === selectedPark ? "#173f31" : "#fff", park.id === selectedPark ? 3.4 : 2.2),
+      iconSize: [30, 34],
+      iconAnchor: [15, 18],
     });
     const marker = L.marker([park.lat, park.lng], {
       icon,
@@ -319,7 +332,7 @@ function render() {
   $("routes").innerHTML = rows.length ? rows.map((park) => {
     const days = ageDays(park.reportDate);
     const stale = days > 5 ? `<div class="freshness old">Older report · ${formatReportDate(park.reportDate)}</div>` : "";
-    return `<article class="route">${cardPhoto(park)}<div class="content"><button class="card-open" type="button" data-detail="${park.id}"><h3>${esc(park.name)}</h3><div class="card-score"><b>${park.colour}%</b><span>${esc(park.dominant)}</span></div><div class="metrics"><span>about ${formatDrive(driveMinutes(park, origin))}</span></div>${stale}</button><button class="save" type="button" data-save="${park.id}" aria-label="${saved.has(park.id) ? "Unsave" : "Save"} ${esc(park.name)}" aria-pressed="${saved.has(park.id)}">${saved.has(park.id) ? "♥" : "♡"}</button></div></article>`;
+    return `<article class="route">${cardPhoto(park)}<div class="content"><button class="card-open" type="button" data-detail="${park.id}"><h3>${esc(park.name)}</h3><div class="card-score"><b>${park.colour}%</b>${toneMark(park)}</div><div class="metrics"><span>about ${formatDrive(driveMinutes(park, origin))}</span></div>${stale}</button><button class="save" type="button" data-save="${park.id}" aria-label="${saved.has(park.id) ? "Unsave" : "Save"} ${esc(park.name)}" aria-pressed="${saved.has(park.id)}">${saved.has(park.id) ? "♥" : "♡"}</button></div></article>`;
   }).join("") : `<div class="empty">${view === "saved" ? "No saved parks yet. Tap the heart on a park." : "Nothing in this drive matches. Try Weekend, or All Ontario."}</div>`;
   renderHero(hero);
   renderMap(rows);
