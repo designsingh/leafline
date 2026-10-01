@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- share -->
+<title>Leafline — fall colour from Toronto</title>
+<meta name="description" content="Real Ontario Parks foliage reports, ranked for a drive from Toronto.">
+<!-- /share -->
+<link rel="stylesheet" href="/styles.css?v=5">
+<link rel="stylesheet" href="/ux.css?v=5">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+<header>
+  <div class="logo">leafline<span> ❋</span></div>
+  <span class="badge">From Toronto · Official reports</span>
+</header>
+<main>
+  <section class="hero">
+    <div>
+      <div class="eyebrow" id="hero-kicker">From Toronto</div>
+      <h1 id="hero-title">The colour<br><em>is on.</em></h1>
+      <p class="sub" id="hero-sub">Checking the latest Ontario Parks reports.</p>
+      <div class="hero-actions">
+        <button class="hero-cta" id="share" type="button">Share this plan</button>
+        <a class="hero-link" href="#foliage-map">See it on the map</a>
+      </div>
+    </div>
+    <div class="canopy">
+      <div class="eyebrow" id="hero-eyebrow">Worth the drive</div>
+      <b id="hero-number"></b>
+      <p id="hero-name"></p>
+      <small id="hero-date"></small>
+      <small class="hero-drive" id="hero-drive"></small>
+      <div id="hero-leaves"></div>
+    </div>
+    <div class="hero-credit">Algonquin scenic photo · Oct 2024 · <a href="https://www.pexels.com/photo/aerial-view-of-vibrant-autumn-forest-and-serene-lake-28843995/" target="_blank" rel="noopener">_theframetheory_ / Pexels</a> · Not a current observation</div>
+  </section>
+
+  <div class="drive-bar" role="group" aria-label="How far to drive">
+    <button type="button" data-drive="90">After work</button>
+    <button type="button" data-drive="180">Day trip</button>
+    <button type="button" data-drive="240" aria-pressed="true">Weekend</button>
+    <button type="button" data-drive="all">All Ontario</button>
+    <button type="button" class="locate" id="locate">Use my location</button>
+  </div>
+  <p class="drive-note" id="drive-note">Drive times are a rough estimate from Toronto to the park pin, not live traffic. Directions open in Google Maps.</p>
+
+  <div class="section-head"><h2 id="picks-title">The weekend list</h2></div>
+  <div class="picks" id="picks"></div>
+
+  <div class="notice" id="feed-status" role="status"></div>
+
+  <section class="map-section" aria-label="Foliage report map">
+    <div class="map-shell">
+      <div id="foliage-map" class="foliage-map" tabindex="0" role="application" aria-label="Map of Ontario Parks foliage reports. Marker numbers follow the list. Plus and minus zoom. Home fits the parks."></div>
+      <div class="map-controls">
+        <button id="zoom-in" type="button" aria-label="Zoom map in">+</button>
+        <button id="zoom-out" type="button" aria-label="Zoom map out">−</button>
+        <button id="zoom-reset" type="button" aria-label="Fit visible parks" title="Fit visible parks">⌖</button>
+        <button id="map-expand" type="button" aria-label="Expand map" title="Expand map" aria-pressed="false">⛶</button>
+      </div>
+      <div class="map-usage">Drag to move · Scroll or pinch to zoom · Numbers match the list</div>
+    </div>
+    <div class="map-sidebar">
+      <div class="eyebrow">On this drive</div>
+      <div class="map-legend">
+        <span><i style="background:#507a43"></i>0–29%</span>
+        <span><i style="background:#cda323"></i>30–59%</span>
+        <span><i style="background:#e97c30"></i>60–79%</span>
+        <span><i style="background:#b84232"></i>80–100%</span>
+      </div>
+      <div class="map-jump"><label for="map-jump">Jump to a park</label><select id="map-jump"></select></div>
+      <div id="map-selection"></div>
+      <p class="map-hint">Marker colours are the reported colour change. The basemap is geography, not a foliage photo.</p>
+    </div>
+  </section>
+
+  <section class="planner" aria-label="Find foliage">
+    <div><label for="search">Find a park</label><input id="search" type="search" placeholder="Algonquin, Mono Cliffs…"></div>
+    <div><label for="region">Ontario Parks region</label><select id="region"><option value="all">All regions</option></select></div>
+    <div>
+      <label for="sort">Sort reports</label>
+      <select id="sort">
+        <option value="trip" selected>Best from here</option>
+        <option value="near">Closest</option>
+        <option value="colour">Most colour change</option>
+        <option value="fresh">Newest observation</option>
+        <option value="leaves">Least leaf fall</option>
+      </select>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <h2 id="results-title">Parks</h2>
+    <div class="tabs">
+      <button id="explore" type="button" aria-pressed="true">Explore</button>
+      <button id="saved" type="button" aria-pressed="false">Saved <span id="saved-count">0</span></button>
+    </div>
+  </div>
+  <div class="grid" id="routes" aria-live="polite"></div>
+
+  <div class="data-links">
+    <button class="secondary" id="refresh" type="button">Refresh reports</button>
+    <a class="secondary" href="https://www.ontarioparks.ca/fallcolour" target="_blank" rel="noopener">Latest official reports ↗</a>
+    <button class="secondary" id="export" type="button">Download report data</button>
+  </div>
+
+  <footer>Source: <a href="https://www.ontarioparks.ca/fallcolour" target="_blank" rel="noopener">Ontario Parks Fall Colour Report</a>. These are park-level observations, not continuous roadside measurements. Colour change and leaf fall are separate reported percentages. No peak-date predictions. “Where to look” is the park’s own viewing note. Scenic photos, when shown, are Ontario Parks gallery images and are not current conditions. A report over 5 days old is highlighted. Directions open in Google Maps.</footer>
+</main>
+<aside id="report" class="drawer" hidden>
+  <div class="drawer-bar">
+    <button type="button" id="close-report" class="drawer-back">Back</button>
+  </div>
+  <div id="detail-body"></div>
+</aside>
+<div class="toast" id="toast" role="status" hidden></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/photos.js?v=5"></script>
+<script type="module" src="/app.mjs?v=5"></script>
+</body>
+</html>

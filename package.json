@@ -1,0 +1,14 @@
+{
+  "name": "leafline",
+  "private": true,
+  "type": "module",
+  "description": "Ontario foliage map. Static page plus /api/foliage.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node --test test/foliage.test.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

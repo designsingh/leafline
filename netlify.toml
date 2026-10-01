@@ -1,0 +1,15 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/foliage"
+  to = "/.netlify/functions/foliage"
+  status = 200
+
+[[edge_functions]]
+  function = "share"
+  path = "/"

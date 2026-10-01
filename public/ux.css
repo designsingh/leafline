@@ -1,0 +1,130 @@
+.hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 18px; }
+.hero-cta { border: 0; cursor: pointer; }
+.hero-link { color: white; font-size: 14px; font-weight: 650; }
+.hero-drive { display: block; margin-top: 6px; font-size: 13px; color: #244c3a; }
+
+.drive-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 18px 0 8px; }
+.drive-bar button, .locate {
+  border: 1px solid #d9ded4;
+  background: #fff;
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: var(--ink);
+}
+.drive-bar button[aria-pressed="true"] { background: var(--green); color: #fff; border-color: var(--green); }
+.drive-note { margin: 0 0 14px; font-size: 12px; color: var(--muted); }
+
+.picks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 8px; }
+.pick {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e5e7dd;
+  border-radius: 16px;
+  padding: 14px;
+  width: 100%;
+}
+.pick.is-on { border-color: var(--green); }
+.pick-rank { font-family: Georgia, serif; font-size: 28px; color: var(--orange); line-height: 1; }
+.pick b { display: block; font-family: Georgia, serif; font-weight: 400; font-size: 20px; letter-spacing: -.3px; }
+.pick small { color: var(--muted); font-size: 12px; }
+
+.swatch-head {
+  min-height: 92px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 14px 16px;
+}
+.swatch-head b { font-size: 32px; letter-spacing: -1px; }
+.swatch-head span { font-size: 12px; }
+
+.viewing { background: #f7f0df; border-radius: 12px; padding: 14px 16px; margin: 8px 0 16px; }
+.viewing b { display: block; margin-bottom: 6px; }
+.viewing p { margin: 0; }
+
+.notice.is-error {
+  background: #f3d7c4;
+  color: #6a3418;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin: 8px 0 16px;
+}
+
+.map-shell .map-controls, .map-usage { z-index: 500; }
+.foliage-map { background: #e2e7d8; }
+.leaflet-container { height: 100%; width: 100%; font: inherit; background: #e2e7d8; }
+.leaflet-control-attribution { font-size: 10px !important; background: #fffffff0 !important; }
+.ll-marker { background: transparent; border: 0; }
+.ll-marker span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: white;
+  font-weight: 700;
+  font-size: 12px;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px #00000044;
+}
+.ll-marker.is-selected span { border-color: #173f31; outline: 2px solid #173f31; }
+.origin-tip {
+  background: #263c32;
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 650;
+  padding: 3px 7px;
+}
+.origin-tip::before { border-right-color: #263c32 !important; }
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  width: min(460px, 100%);
+  overflow: auto;
+  background: var(--paper);
+  border-left: 1px solid #dedfd4;
+  box-shadow: -16px 0 40px #172b2214;
+}
+.drawer[hidden] { display: none; }
+.drawer-bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f7f5efee;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #dedfd4;
+}
+.drawer-back {
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font-weight: 650;
+  padding: 8px 4px;
+}
+.drawer .modal-head { background: transparent; padding: 22px 22px 0; }
+.drawer .modal-content { padding: 8px 22px 28px; }
+.drawer .report-gallery { display: grid; grid-template-columns: 1fr; overflow: visible; }
+.drawer .report-gallery figure { min-width: 0; }
+.drawer .report-gallery img { width: 100%; height: auto; max-height: 320px; object-fit: cover; border-radius: 12px; }
+
+@media (max-width: 700px) {
+  .picks { grid-template-columns: 1fr; }
+  .hero-actions { width: 100%; }
+  .hero-cta { width: 100%; justify-content: center; }
+  .drawer { width: 100%; border-left: 0; }
+  body.report-open { overflow: hidden; }
+}
