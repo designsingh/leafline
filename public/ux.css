@@ -96,7 +96,7 @@
   border-left: 1px solid #dedfd4;
   box-shadow: -16px 0 40px #172b2214;
 }
-.drawer[hidden] { display: none; }
+body.report-open #map-selection { display: none; }
 .drawer-bar {
   position: sticky;
   top: 0;

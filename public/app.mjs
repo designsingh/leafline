@@ -373,6 +373,7 @@ function fillReport(id) {
   panel.hidden = false;
   panel.setAttribute("aria-labelledby", "drawer-title");
   document.body.classList.add("report-open");
+  document.title = `${park.name} is at ${park.colour}% — Leafline`;
 }
 
 function hideReport() {
@@ -414,19 +415,24 @@ function maybeOpenArrival() {
 function openReport(id, mode = "push") {
   const park = feed.parks.find((item) => item.id === id);
   if (!park) return;
-  const already = openReportId === id && !$("report").hidden;
+  const open = Boolean(openReportId) && !$("report").hidden;
+  const already = open && openReportId === id;
   openReportId = id;
   selectedPark = id;
   pendingFocus = id;
+  if (expanded) toggleMapExpanded(false);
   const url = new URL(location.href);
   url.searchParams.set("park", id);
   url.hash = "";
-  if (mode === "push" && !already) {
-    history.pushState({ report: id, pushed: true }, "", url);
-  } else if (mode !== "show") {
-    history.replaceState({ report: id, pushed: Boolean(history.state?.pushed) }, "", url);
+  if (!already) {
+    const state = { report: id, pushed: true };
+    if (open || mode === "replace") history.replaceState(state, "", url);
+    else if (mode === "push") history.pushState(state, "", url);
+    else history.replaceState({ report: id, pushed: false }, "", url);
   }
   render();
+  const panel = $("report");
+  if (panel) panel.scrollTop = 0;
   if (mode !== "show") $("close-report")?.focus();
 }
 
