@@ -118,7 +118,7 @@ function cardPhoto(park) {
 function photoGallery(park) {
   const items = photosFor(park);
   if (!items.length) return "";
-  return `<div class="gallery-heading"><b>Explore ${esc(park.name)}</b><span>${items.length} photos</span></div><div class="report-gallery">${items.map((shot) => `<figure><img src="${esc(shot.src)}" alt="${esc(shot.alt)}" loading="lazy"><figcaption>${esc(shot.alt)}<br>Scenic reference · <a href="${esc(shot.source)}" target="_blank" rel="noopener">Ontario Parks ↗</a></figcaption></figure>`).join("")}</div><p class="meta">These photos show the place. The percentages below are the dated report.</p>`;
+  return `<div class="gallery-heading"><b>Scenic photos</b><span>Not today’s conditions</span></div><div class="report-gallery">${items.map((shot) => `<figure><img src="${esc(shot.src)}" alt="${esc(shot.alt)}" loading="lazy"><figcaption><a href="${esc(shot.source)}" target="_blank" rel="noopener">Ontario Parks ↗</a></figcaption></figure>`).join("")}</div>`;
 }
 
 function mapPhoto(park) {
@@ -371,7 +371,7 @@ function fillReport(id) {
     return;
   }
   const viewing = park.viewing ? `<div class="viewing"><b>Where to look</b><p>${esc(park.viewing)}</p></div>` : "";
-  $("detail-body").innerHTML = `<div class="modal-head"><div><div class="eyebrow">Official park observation</div><h2 id="drawer-title">${esc(park.name)}</h2><p class="meta">Report dated ${formatReportDate(park.reportDate)} · about ${formatDrive(driveMinutes(park, origin))} from ${placeName()}</p></div></div><div class="modal-content">${photoGallery(park)}${viewing}<div class="detail-stats"><div class="stat"><b>${park.colour}%</b><span>Reported colour change</span></div><div class="stat"><b>${park.fall}%</b><span>Reported leaf fall</span></div></div>${leaves(park)}${retention(park)}<p>Dominant colour: <strong>${esc(park.dominant)}</strong>.</p><p class="meta">This is the park’s report for that date. The drive time is an estimate, not live traffic. No peak date is predicted.</p><div class="source-row"><b>Where this comes from</b>Ontario Parks Fall Colour Report · ${ageLabel(park.reportDate)}.<br>Retrieved ${esc(new Date(feed.fetchedAt).toLocaleString("en-CA", { timeZone: "America/Toronto" }))} Toronto time.</div><div class="modal-actions"><button class="primary" type="button" data-share="${park.id}">Share this park</button><a class="secondary" href="${directionsUrl(park)}" target="_blank" rel="noopener">Directions ↗</a><a class="secondary" href="${esc(feed.source)}" target="_blank" rel="noopener">Official foliage report ↗</a><a class="secondary" href="${esc(park.parkUrl)}" target="_blank" rel="noopener">Park access & permits ↗</a></div></div>`;
+  $("detail-body").innerHTML = `<div class="modal-head"><div><div class="eyebrow">Official park observation</div><h2 id="drawer-title">${esc(park.name)}</h2><p class="meta">Report dated ${formatReportDate(park.reportDate)} · about ${formatDrive(driveMinutes(park, origin))} from ${placeName()}</p></div></div><div class="modal-content"><div class="detail-stats"><div class="stat"><b>${park.colour}%</b><span>Reported colour change</span></div><div class="stat"><b>${park.fall}%</b><span>Reported leaf fall</span></div></div>${leaves(park)}<p>Dominant colour: <strong>${esc(park.dominant)}</strong>.</p>${retention(park)}${viewing}${photoGallery(park)}<p class="meta">This is the park’s report for that date. The drive time is an estimate, not live traffic. No peak date is predicted. Scenic photos are not current conditions.</p><div class="source-row"><b>Where this comes from</b>Ontario Parks Fall Colour Report · ${ageLabel(park.reportDate)}.<br>Retrieved ${esc(new Date(feed.fetchedAt).toLocaleString("en-CA", { timeZone: "America/Toronto" }))} Toronto time.</div><div class="modal-actions"><button class="primary" type="button" data-share="${park.id}">Share this park</button><a class="secondary" href="${directionsUrl(park)}" target="_blank" rel="noopener">Directions ↗</a><a class="secondary" href="${esc(feed.source)}" target="_blank" rel="noopener">Official foliage report ↗</a><a class="secondary" href="${esc(park.parkUrl)}" target="_blank" rel="noopener">Park access & permits ↗</a></div></div>`;
   panel.hidden = false;
   panel.setAttribute("aria-labelledby", "drawer-title");
   document.body.classList.add("report-open");
@@ -528,22 +528,23 @@ function clearPin() {
 
 document.addEventListener("click", (event) => {
   const button = event.target.closest("button");
-  if (!button) return;
-  if (button.dataset.share) {
+  if (button?.dataset.share) {
     sharePark(button.dataset.share);
     return;
   }
-  if (button.dataset.detail) {
+  if (button?.dataset.detail) {
     openReport(button.dataset.detail);
     return;
   }
-  if (button.dataset.save) {
+  if (button?.dataset.save) {
     if (saved.has(button.dataset.save)) saved.delete(button.dataset.save);
     else saved.add(button.dataset.save);
     try { localStorage.setItem("leafline-real-saved", JSON.stringify([...saved])); } catch { /* ignore quota */ }
     render();
+    return;
   }
-});
+  if (openReportId && !$("report").contains(event.target)) closeReport();
+}, true);
 
 for (const button of document.querySelectorAll("[data-drive]")) {
   button.addEventListener("click", () => {

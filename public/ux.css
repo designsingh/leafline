@@ -115,16 +115,32 @@
   font-weight: 650;
   padding: 8px 4px;
 }
-.drawer .modal-head { background: transparent; padding: 22px 22px 0; }
+.drawer .modal-head { background: transparent; padding: 12px 22px 0; }
+.drawer .modal-head h2 { margin: 4px 0 6px; font-size: 28px; letter-spacing: -0.5px; }
 .drawer .modal-content { padding: 8px 22px 28px; }
-.drawer .report-gallery { display: grid; grid-template-columns: 1fr; overflow: visible; }
-.drawer .report-gallery figure { min-width: 0; }
-.drawer .report-gallery img { width: 100%; height: auto; max-height: 320px; object-fit: cover; border-radius: 12px; }
+.drawer .detail-stats { margin-top: 4px; }
+.drawer .report-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0 0;
+  overflow: visible;
+}
+.drawer .report-gallery figure { min-width: 0; margin: 0; }
+.drawer .report-gallery img {
+  width: 100%;
+  height: 84px;
+  max-height: 84px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.drawer .report-gallery figcaption { padding-top: 4px; }
+.drawer .gallery-heading { margin-top: 8px; }
 
 @media (max-width: 700px) {
   .picks { grid-template-columns: 1fr; }
   .hero-actions { width: 100%; }
   .hero-cta { width: 100%; justify-content: center; }
-  .drawer { width: 100%; border-left: 0; }
+  .drawer { width: min(460px, calc(100% - 44px)); }
   body.report-open { overflow: hidden; }
 }
