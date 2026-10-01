@@ -107,9 +107,28 @@ function retention(park) {
   return `<div class="retention-visual"><svg viewBox="0 0 80 80" role="img" aria-label="${remain}% of leaves remaining"><circle cx="40" cy="40" r="29" fill="none" stroke="#dedfcf" stroke-width="9"/><circle cx="40" cy="40" r="29" fill="none" stroke="#54764a" stroke-width="9" stroke-dasharray="${remain / 100 * 182.21} 182.21" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" fill="#244c3a" font-size="16" font-family="system-ui">${remain}%</text></svg><p><strong>${park.fall}% leaf fall</strong><br>Ring shows ${remain}% still on the trees<br><span style="font-size:11px">Calculated as 100 − reported leaf fall</span></p></div>`;
 }
 
+function cardSketch(park) {
+  const colour = leafColour(park);
+  const sky = `sky-${park.id}`;
+  const tree = (x, y, size, fill) => `<rect x="${x - 3}" y="${y}" width="6" height="${Math.round(size * 0.62)}" rx="2" fill="#3c5240"/><circle cx="${x}" cy="${y + 1}" r="${Math.round(size * 0.46)}" fill="${fill}"/><circle cx="${x - size * 0.2}" cy="${y + 7}" r="${Math.round(size * 0.28)}" fill="${fill}" opacity=".7"/>`;
+  const trees = [
+    [36, 112, 42, "#739064"],
+    [78, 100, 56, "#628458"],
+    [122, 108, 48, colour],
+    [164, 90, 68, "#56764e"],
+    [208, 102, 54, colour],
+    [252, 88, 72, "#6d8c60"],
+    [298, 104, 50, colour],
+    [342, 94, 64, "#4f6e48"],
+    [378, 110, 44, "#7b9a68"],
+  ].map(([x, y, size, fill]) => tree(x, y, size, fill)).join("");
+  const leaf = (x, y, turn) => `<path d="${LEAFPATH}" fill="${colour}" transform="translate(${x} ${y}) rotate(${turn}) scale(.38)"/>`;
+  return `<button class="park-photo park-sketch" data-detail="${park.id}" type="button" aria-label="Open ${esc(park.name)} report"><svg viewBox="0 0 400 185" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="${sky}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c5dbc4"/><stop offset="55%" stop-color="#eef3e6"/><stop offset="100%" stop-color="#f6f0e2"/></linearGradient></defs><rect width="400" height="185" fill="url(#${sky})"/><circle cx="318" cy="44" r="22" fill="#f3d07a"/><circle cx="318" cy="44" r="36" fill="#f3d07a" opacity=".28"/><ellipse cx="86" cy="48" rx="36" ry="11" fill="#fff" opacity=".5"/><ellipse cx="112" cy="44" rx="20" ry="9" fill="#fff" opacity=".72"/><path d="M0 96C72 70 128 92 196 76 268 58 322 88 400 68V185H0Z" fill="#d7e2c8"/><path d="M0 124C88 106 154 134 232 116 304 100 348 128 400 114V185H0Z" fill="#9aaf86"/><path d="M0 158C84 148 156 170 246 154 316 142 362 164 400 152V185H0Z" fill="#5c7652"/>${trees}${leaf(58, 72, -16)}${leaf(188, 48, 22)}${leaf(268, 70, -8)}</svg><span class="photo-tag">${esc(park.name)}</span></button><div class="photo-credit">Colour sketch</div>`;
+}
+
 function cardPhoto(park) {
   const shot = photosFor(park)[0];
-  if (!shot) return "";
+  if (!shot) return cardSketch(park);
   return `<button class="park-photo" data-detail="${park.id}" type="button" aria-label="See ${esc(park.name)} photos and report"><img src="${esc(shot.src)}" alt="${esc(shot.alt)}" loading="lazy" width="1200" height="900"><span class="photo-tag">${esc(park.name)} · scenic photo</span><span class="photo-count">▧ ${photosFor(park).length} photos</span></button><div class="photo-credit">Ontario Parks · Not today’s conditions</div>`;
 }
 

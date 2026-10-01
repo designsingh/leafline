@@ -35,6 +35,8 @@
 .route .content { display: flex; flex-direction: column; flex: 1; position: relative; }
 .route .card-accent { height: 4px; border-radius: 4px; margin: -6px 0 12px; }
 .route:has(.park-photo) .card-accent { display: none; }
+.park-photo svg { display: block; width: 100%; height: 100%; transition: transform .4s ease-out; }
+.park-sketch:hover svg { transform: scale(1.04); }
 .route .card-score { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 4px; }
 .route .card-score b { font-size: 32px; letter-spacing: -1px; line-height: 1; }
 .route .card-score span { font-size: 13px; color: var(--muted); }
